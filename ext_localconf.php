@@ -9,35 +9,38 @@ call_user_func(function () {
         'EXT:email2powermail/Classes/Hooks/ContentPostProc.php:' .
         '&In2code\\Email2powermail\\Hooks\\ContentPostProc->manipulateOutput';
 
-    # Use signals
-    $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-        \TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class
-    );
+    $pluginVariables = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('tx_email2powermail');
+    if (isset($pluginVariables['id'])) {
+        # Use signals
+        $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class
+        );
 
-    // Manipulate email before sending example
-    $signalSlotDispatcher->connect(
-        \In2code\Powermail\Domain\Service\ReceiverEmailService::class,
-        'setReceiverEmails',
-        \In2code\Email2powermail\Slots\ReceiverEmailService::class,
-        'setReceiverEmails',
-        false
-    );
+        // Manipulate email before sending example
+        $signalSlotDispatcher->connect(
+            \In2code\Powermail\Domain\Service\ReceiverEmailService::class,
+            'setReceiverEmails',
+            \In2code\Email2powermail\Slots\ReceiverEmailService::class,
+            'setReceiverEmails',
+            false
+        );
 
-    // Manipulate name before sending example
-    $signalSlotDispatcher->connect(
-        \In2code\Powermail\Domain\Service\ReceiverEmailService::class,
-        'getReceiverName',
-        \In2code\Email2powermail\Slots\ReceiverEmailService::class,
-        'getReceiverName',
-        false
-    );
+        // Manipulate name before sending example
+        $signalSlotDispatcher->connect(
+            \In2code\Powermail\Domain\Service\ReceiverEmailService::class,
+            'getReceiverName',
+            \In2code\Email2powermail\Slots\ReceiverEmailService::class,
+            'getReceiverName',
+            false
+        );
 
-    // Add own markers
-    $signalSlotDispatcher->connect(
-        \In2code\Powermail\Domain\Repository\MailRepository::class,
-        'getVariablesWithMarkersFromMail',
-        \In2code\Email2powermail\Slots\MarkerSlot::class,
-        'getVariablesWithMarkersFromMail',
-        false
-    );
+        // Add own markers
+        $signalSlotDispatcher->connect(
+            \In2code\Powermail\Domain\Repository\MailRepository::class,
+            'getVariablesWithMarkersFromMail',
+            \In2code\Email2powermail\Slots\MarkerSlot::class,
+            'getVariablesWithMarkersFromMail',
+            false
+        );
+    }
 });
